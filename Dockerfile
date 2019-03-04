@@ -1,27 +1,23 @@
-ARG target=arm32v6
-FROM $target/alpine
+FROM minio/minio as minio
+FROM balenalib/armv7hf-debian:buster
 
-ARG arch=arm
-ENV ARCH=$arch
-
-COPY qemu-$ARCH-static* /usr/bin/
-
-LABEL maintainer="Jesse Stuart <hi@jessestuart.com>"
-
-# Dockerfile application commands from this point on
-COPY minio dockerscripts/docker-entrypoint.sh dockerscripts/healthcheck.sh /usr/bin/
+COPY --from=minio /usr/bin/docker-entrypoint.sh /usr/bin/
+COPY --from=minio /usr/bin/healthcheck /usr/bin/
 
 ENV MINIO_UPDATE off
 ENV MINIO_ACCESS_KEY_FILE=access_key \
     MINIO_SECRET_KEY_FILE=secret_key
 
+RUN [ "cross-build-start" ]
 RUN \
-     apk add --no-cache ca-certificates && \
-     apk add --no-cache --virtual .build-deps curl && \
+     apt-get update && \
+     apt-get install -y ca-certificates curl && \
      echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
+     cd /usr/bin && curl -ksSLO http://dl.minio.io/server/minio/release/linux-arm/minio && \
      chmod +x /usr/bin/minio  && \
      chmod +x /usr/bin/docker-entrypoint.sh && \
-     chmod +x /usr/bin/healthcheck.sh
+     chmod +x /usr/bin/healthcheck
+RUN [ "cross-build-end" ]
 
 EXPOSE 9000
 
@@ -30,6 +26,6 @@ ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 VOLUME ["/data"]
 
 HEALTHCHECK --interval=30s --timeout=5s \
-    CMD /usr/bin/healthcheck.sh
+    CMD /usr/bin/healthcheck
 
 CMD ["minio"]
