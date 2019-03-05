@@ -15,8 +15,7 @@ RUN \
      echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
      cd /usr/bin && curl -ksSLO http://dl.minio.io/server/minio/release/linux-arm/minio && \
      chmod +x /usr/bin/minio  && \
-     chmod +x /usr/bin/docker-entrypoint.sh && \
-     chmod +x /usr/bin/healthcheck
+     chmod +x /usr/bin/docker-entrypoint.sh
 RUN [ "cross-build-end" ]
 
 EXPOSE 9000
@@ -26,6 +25,6 @@ ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 VOLUME ["/data"]
 
 HEALTHCHECK --interval=30s --timeout=5s \
-    CMD /usr/bin/healthcheck
+    CMD curl -s http://localhost:9000
 
 CMD ["minio"]
