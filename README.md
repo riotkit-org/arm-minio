@@ -1,6 +1,6 @@
 ### Min.io server with ARM support
 
-[Minio][minio-home] is a FOSS project offering a "high performance distributed
+Minio is a FOSS project offering a "high performance distributed
 object storage server", with fabulous features like an S3-compliant API,
 excellent documentation, and out-of-the-box support for Docker, K8S, and most
 major cloud providers (as well as self-hosting, of course).
