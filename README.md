@@ -13,4 +13,10 @@ behind x64/AMD).
 ### How can I use this?
 
 Use it as a regular Min.io image.
+
 ```
+sudo docker pull quay.io/riotkit/minio:RELEASE.2019-09-18T21-55-05Z-x86_64
+```
+
+Check out available tags there:
+https://quay.io/repository/riotkit/minio?tab=tags
