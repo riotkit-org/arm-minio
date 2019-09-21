@@ -1,4 +1,4 @@
-### Minio Server on Docker ARM
+### Min.io server with ARM support
 
 [Minio][minio-home] is a FOSS project offering a "high performance distributed
 object storage server", with fabulous features like an S3-compliant API,
@@ -12,51 +12,5 @@ behind x64/AMD).
 
 ### How can I use this?
 
-You can run the following command on an ARM-based system to stand up
-a standalone instance of Minio Server on Docker:
-
-```bash
-docker run \
-  -v /export/minio \
-  -v /export/minio-config:/root/.minio \
-  -p 9000:9000 \
-  jessestuart/minio-armhf server /export
+Use it as a regular Min.io image.
 ```
-
-Alternatively, you can build locally to ensure you're pulling the latest stable
-binary:
-
-```bash
-git clone https://github.com/jessestuart/minio-armhf
-cd minio-armhf
-docker build -t minio-armhf .
-# ---------------------------------------
-# Or to push to your Docker Hub account (or quay.io, etc) to make the image
-# publicly accessible:
-docker build -t {your_username}/minio-armhf .
-docker push {your_username}/minio-armhf .
-```
-
-#### Kubernetes Usage
-
-The `latest` image will work on `arm` Kubernetes out-of-the-box. However, if
-you're looking to patch a recent Helm chart and get a full Minio deployment
-working with a single command, you'll run into an error with the configuration
-version (I'm presuming because at time of writing, the hosted ARM release is
-eight months behind `master`). So to get this working, I compiled a binary from
-source on native ARM. I've used the `dev` tag for this image to indicate that it
-may be unstable, pulling from `master`.
-
-Using that binary, I was able to get the deployment up and running with
-something like:
-
-```bash
-$ helm install stable/minio \
-  --tiller-namespace kube-system \
-  --set image=jessestuart/minio-armhf,imageTag=dev
-```
-
-You can check out Minio's [docs][minio-k8s] for more info.
-
-[minio-home]: https://minio.io
-[minio-k8s]: https://docs.minio.io/docs/deploy-minio-on-kubernetes
