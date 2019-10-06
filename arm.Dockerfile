@@ -13,10 +13,11 @@ FROM golang:1.13 as builder
 ARG MINIO_VERSION
 
 RUN set -x \
-    && cd /usr \
-    && GO111MODULE=on GOARCH=arm GOOS=linux go get github.com/minio/minio@$MINIO_VERSION \
-    && GO111MODULE=on GOARCH=arm GOOS=linux go build github.com/minio/minio \
-    && test -f bin/minio
+    && cd /opt \
+    && git clone https://github.com/minio/minio -b $MINIO_VERSION \
+    && cd /opt/minio \
+    && GOOS=linux GOARCH=arm64 go build -tags kqueue -o /usr/bin/minio \
+    && test -f /usr/bin/minio
 
 #
 # 3. Create an output image on the ARM base
