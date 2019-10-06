@@ -25,7 +25,6 @@ RUN set -x \
 FROM balenalib/armv7hf-debian:buster
 
 COPY --from=minio /usr/bin/docker-entrypoint.sh /usr/bin/
-COPY --from=minio /usr/bin/healthcheck /usr/bin/
 COPY --from=builder /usr/bin/minio /usr/bin/
 
 ARG MINIO_VERSION
@@ -47,8 +46,5 @@ EXPOSE 9000
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 VOLUME ["/data"]
-
-HEALTHCHECK --interval=30s --timeout=5s \
-    CMD curl -s http://localhost:9000
 
 CMD ["minio"]
