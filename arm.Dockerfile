@@ -22,10 +22,10 @@ RUN set -x \
 #
 # 3. Create an output image on the ARM base
 #
-FROM balenalib/armv7hf-debian:buster
+FROM balenalib/aarch64-debian:buster
 
 COPY --from=minio /usr/bin/docker-entrypoint.sh /usr/bin/
-COPY --from=builder /usr/bin/minio /usr/bin/
+COPY --from=builder /usr/bin/minio /usr/bin/minio
 
 ARG MINIO_VERSION
 ENV MINIO_ACCESS_KEY_FILE= \
@@ -34,11 +34,12 @@ ENV MINIO_ACCESS_KEY_FILE= \
 
 RUN [ "cross-build-start" ]
 RUN \
-     apt-get update && \
-     apt-get install -y ca-certificates curl && \
-     echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
-     chmod +x /usr/bin/minio  && \
-     chmod +x /usr/bin/docker-entrypoint.sh
+     apt-get update \
+     && apt-get install -y ca-certificates curl \
+     && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf \
+     && chmod +x /usr/bin/minio \
+     && chmod +x /usr/bin/docker-entrypoint.sh \
+     && useradd -u 1000 minio
 RUN [ "cross-build-end" ]
 
 EXPOSE 9000
