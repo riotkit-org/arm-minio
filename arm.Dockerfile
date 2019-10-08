@@ -16,13 +16,13 @@ RUN set -x \
     && cd /opt \
     && git clone https://github.com/minio/minio -b $MINIO_VERSION \
     && cd /opt/minio \
-    && GOOS=linux GOARCH=arm64 go build -tags kqueue -o /usr/bin/minio \
+    && GOOS=linux GOARCH=arm go build -tags kqueue -o /usr/bin/minio \
     && test -f /usr/bin/minio
 
 #
 # 3. Create an output image on the ARM base
 #
-FROM balenalib/aarch64-debian:buster
+FROM balenalib/armv7hf-debian:buster
 
 COPY --from=minio /usr/bin/docker-entrypoint.sh /usr/bin/
 COPY --from=builder /usr/bin/minio /usr/bin/minio
